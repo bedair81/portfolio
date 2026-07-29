@@ -9,12 +9,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=3" />
 </head>
 <body>
   <header class="nav" id="nav">
     <div class="wrap nav-inner">
-      <a href="#top" class="brand">
+      <a href="#top" class="brand" id="brandLink">
         <span class="mark">AB</span>
         <span>Ahmed Bedair</span>
       </a>
@@ -27,20 +27,30 @@
         <a href="#contact">Contact</a>
         <a class="btn btn-solid btn-sm" href="mailto:ahmed.bedair81@icloud.com">Get in touch</a>
       </nav>
-      <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false">
-        <span></span><span></span>
+      <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <span class="menu-icon" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </span>
       </button>
     </div>
-    <div class="mobile-menu" id="mobileMenu">
+  </header>
+
+  <div class="menu-overlay" id="menuOverlay" hidden></div>
+  <div class="mobile-drawer" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+    <div class="drawer-top">
+      <span class="drawer-title">Menu</span>
+      <button type="button" class="drawer-close" id="menuClose" aria-label="Close menu">Close</button>
+    </div>
+    <nav class="drawer-nav">
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
       <a href="#projects">Projects</a>
       <a href="#skills">Skills</a>
       <a href="#education">Education</a>
       <a href="#contact">Contact</a>
-      <a class="btn btn-solid" href="mailto:ahmed.bedair81@icloud.com">Get in touch</a>
-    </div>
-  </header>
+    </nav>
+    <a class="btn btn-solid drawer-cta" href="mailto:ahmed.bedair81@icloud.com">Get in touch</a>
+  </div>
 
   <main>
     <section class="hero wrap" id="top">
@@ -356,13 +366,23 @@
     document.getElementById('year').textContent = new Date().getFullYear();
     const nav = document.getElementById('nav');
     const menuBtn = document.getElementById('menuBtn');
+    const menuClose = document.getElementById('menuClose');
     const mobileMenu = document.getElementById('mobileMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
+    const brandLink = document.getElementById('brandLink');
 
     function setMenuOpen(open) {
-      mobileMenu.classList.toggle('is-open', open);
+      mobileMenu.hidden = !open;
+      menuOverlay.hidden = !open;
       menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
       menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-      document.body.style.overflow = open ? 'hidden' : '';
+      menuBtn.classList.toggle('is-active', open);
+      document.documentElement.classList.toggle('menu-open', open);
+      document.body.classList.toggle('menu-open', open);
+    }
+
+    function isMenuOpen() {
+      return !mobileMenu.hidden;
     }
 
     window.addEventListener('scroll', () => {
@@ -370,23 +390,32 @@
     }, { passive: true });
 
     menuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       e.stopPropagation();
-      setMenuOpen(!mobileMenu.classList.contains('is-open'));
+      setMenuOpen(!isMenuOpen());
     });
 
-    mobileMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+    menuClose.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       setMenuOpen(false);
-    }));
+    });
 
-    document.addEventListener('click', (e) => {
-      if (!mobileMenu.classList.contains('is-open')) return;
-      if (nav.contains(e.target)) return;
-      setMenuOpen(false);
+    menuOverlay.addEventListener('click', () => setMenuOpen(false));
+
+    brandLink.addEventListener('click', () => setMenuOpen(false));
+
+    mobileMenu.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', () => setMenuOpen(false));
     });
 
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') setMenuOpen(false);
     });
+
+    // Ensure closed on load / bfcache restore
+    setMenuOpen(false);
+    window.addEventListener('pageshow', () => setMenuOpen(false));
   </script>
 </body>
 </html>
