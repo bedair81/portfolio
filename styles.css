@@ -122,6 +122,7 @@ h3 { font-size: 1.125rem; letter-spacing: -0.01em; }
 .hero-grid {
   display: grid; gap: 2.5rem; align-items: end;
 }
+.hero-grid-solo { grid-template-columns: 1fr !important; max-width: 48rem; }
 .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
 .chip {
   display: inline-flex; align-items: center; gap: 0.4rem;
