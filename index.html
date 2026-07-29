@@ -31,7 +31,7 @@
         <span></span><span></span>
       </button>
     </div>
-    <div class="mobile-menu" id="mobileMenu" hidden>
+    <div class="mobile-menu" id="mobileMenu">
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
       <a href="#projects">Projects</a>
@@ -357,23 +357,36 @@
     const nav = document.getElementById('nav');
     const menuBtn = document.getElementById('menuBtn');
     const mobileMenu = document.getElementById('mobileMenu');
+
+    function setMenuOpen(open) {
+      mobileMenu.classList.toggle('is-open', open);
+      menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.body.style.overflow = open ? 'hidden' : '';
+    }
+
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 12);
     }, { passive: true });
-    menuBtn.addEventListener('click', () => {
-      const open = mobileMenu.hasAttribute('hidden') === false;
-      if (open) {
-        mobileMenu.hidden = true;
-        menuBtn.setAttribute('aria-expanded', 'false');
-      } else {
-        mobileMenu.hidden = false;
-        menuBtn.setAttribute('aria-expanded', 'true');
-      }
+
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setMenuOpen(!mobileMenu.classList.contains('is-open'));
     });
+
     mobileMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
-      mobileMenu.hidden = true;
-      menuBtn.setAttribute('aria-expanded', 'false');
+      setMenuOpen(false);
     }));
+
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.classList.contains('is-open')) return;
+      if (nav.contains(e.target)) return;
+      setMenuOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') setMenuOpen(false);
+    });
   </script>
 </body>
 </html>

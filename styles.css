@@ -88,13 +88,29 @@ h3 { font-size: 1.125rem; letter-spacing: -0.01em; }
 .menu-btn {
   width: 2.75rem; height: 2.75rem; border: 0; background: transparent; color: var(--fg);
   display: grid; place-content: center; gap: 5px; cursor: pointer;
+  position: relative; z-index: 2;
 }
-.menu-btn span { display: block; width: 18px; height: 1.5px; background: currentColor; }
+.menu-btn span {
+  display: block; width: 18px; height: 1.5px; background: currentColor;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  transform-origin: center;
+}
+.menu-btn[aria-expanded="true"] span:first-child {
+  transform: translateY(3.25px) rotate(45deg);
+}
+.menu-btn[aria-expanded="true"] span:last-child {
+  transform: translateY(-3.25px) rotate(-45deg);
+}
 .mobile-menu {
+  display: none;
   border-top: 1px solid var(--border);
   background: var(--bg);
   padding: 1rem 1.25rem 1.25rem;
-  display: flex; flex-direction: column; gap: 0.25rem;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.mobile-menu.is-open {
+  display: flex;
 }
 .mobile-menu a {
   padding: 0.75rem 0.75rem; border-radius: 0.5rem; color: var(--muted); font-size: 1rem;
