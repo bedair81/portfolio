@@ -353,6 +353,9 @@ body.menu-open {
 .project-grid {
   display: grid; gap: 1rem;
 }
+.project-grid + .project-grid {
+  margin-top: 1rem;
+}
 .project-card {
   border: 1px solid var(--border); background: var(--bg-elevated);
   border-radius: 1.25rem; padding: 1.25rem;
